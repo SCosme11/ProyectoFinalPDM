@@ -146,7 +146,7 @@ class PantallaBienvenida extends StatelessWidget {
                         ruta: '/historial',
                       ),
                       const SizedBox(height: 30),
-                      const Text("HERRAMIENTAS DE CAMPO", style: TextStyle(color: Color(0xFFD4AF37), letterSpacing: 1.2)),
+                      const Text("HERRAMIENTAS DE CAMPO", style: TextStyle(color: Color(0xFFFF6D00), letterSpacing: 1.2)),
                       const SizedBox(height: 15),
                       Row(
                         children: [
