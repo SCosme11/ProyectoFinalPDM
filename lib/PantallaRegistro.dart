@@ -67,7 +67,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 children: [
                   Icon(Icons.check_circle, color: Theme.of(context).primaryColor),
                   SizedBox(width: 10),
-                  Text('Bitácora registrada con éxito'),
+                  Text('Bitácora registrada con éxito', style: TextStyle(color: Colors.white54),),
                 ],
               ),
             backgroundColor: Color(0xFF1E1E1E),
