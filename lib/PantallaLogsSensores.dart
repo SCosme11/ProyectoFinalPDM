@@ -25,6 +25,36 @@ class _PantallaLogsSensoresState extends State<PantallaLogsSensores> {
     });
   }
 
+  void _confirmarBorrado(int id, bool esMagnetometro){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("¿Borrar lectura?", style: TextStyle(color: Colors.white)),
+            content: Text("¿Deseas eliminar este registro del sensor?", style: TextStyle(color: Colors.white70)),
+            actions: [
+              TextButton(
+                  child: Text("CANCELAR", style: TextStyle(color: Colors.white54)),
+                  onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                  child: Text("BORRAR", style: TextStyle(color: Colors.redAccent)),
+                  onPressed: () async {
+                    if(esMagnetometro){
+                      await AdministradorBaseDatos.instancia.eliminarMagnetometro(id);
+                    }else {
+                      await AdministradorBaseDatos.instancia.eliminarBarometro(id);
+                    }
+                    Navigator.of(context).pop();
+                    _cargarLogs();
+                  },
+              )
+            ],
+          );
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -56,6 +86,7 @@ class _PantallaLogsSensoresState extends State<PantallaLogsSensores> {
                       colorIcono: Colors.redAccent,
                       datos: logsMagnetometro,
                       esMagnetometro: true,
+                      onDelete:(id) => _confirmarBorrado(id, true),
                     );
 
                     final listaBar = _SeccionSensor(
@@ -64,6 +95,7 @@ class _PantallaLogsSensoresState extends State<PantallaLogsSensores> {
                       colorIcono: Colors.blueAccent,
                       datos: logsBarometro,
                       esMagnetometro: false,
+                      onDelete: (id) => _confirmarBorrado(id, false),
                     );
 
                     if(orientation == Orientation.portrait) {
@@ -100,6 +132,7 @@ class _SeccionSensor extends StatelessWidget {
   final Color colorIcono;
   final List<Map<String, dynamic>> datos;
   final bool esMagnetometro;
+  final Function(int) onDelete;
 
   const _SeccionSensor({
     required this.titulo,
@@ -107,7 +140,7 @@ class _SeccionSensor extends StatelessWidget {
     required this.colorIcono,
     required this.datos,
     required this.esMagnetometro,
-
+    required this.onDelete,
   });
 
   @override
@@ -158,6 +191,10 @@ class _SeccionSensor extends StatelessWidget {
                         ),
                         subtitle: Text(fecha, style: TextStyle(color: Colors.white38, fontSize: 11)),
                         dense: true,
+                        trailing: IconButton(
+                            icon: Icon(Icons.close, color: Colors.white24, size: 18),
+                            onPressed: () => onDelete(item['id']),
+                        ),
                       ),
                     );
                   }

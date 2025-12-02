@@ -21,6 +21,39 @@ class _PantallaHistorialState extends State<PantallaHistorial> {
     });
   }
 
+  void _eliminarViaje(int id) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFF2C2C2C),
+            title: Text("¿Borrar Expedición?", style: TextStyle(color: Colors.white)),
+            content: Text("Esta acción no se puede deshacer.", style: TextStyle(color: Colors.white70)),
+            actions: [
+              TextButton(
+                  child: Text("CANCELAR", style: TextStyle(color: Colors.white54)),
+                  onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                  child: Text("BORRAR", style: TextStyle(color: Colors.white54)),
+                  onPressed: () async {
+                    await AdministradorBaseDatos.instancia.eliminarBitacora(id);
+                    Navigator.of(context).pop();
+                    _cargarDatos();
+
+                    if(mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Expedición eliminada')),
+                      );
+                    }
+                  },
+              )
+            ],
+          );
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +87,7 @@ class _PantallaHistorialState extends State<PantallaHistorial> {
               itemCount: viajes.length,
               itemBuilder: (context, index) {
                 final viaje = viajes[index];
-                return _TarjetaViaje(viaje: viaje);
+                return _TarjetaViaje(viaje: viaje, onDelete: () => _eliminarViaje(viaje['id']));
               },
             );
           }
@@ -65,8 +98,9 @@ class _PantallaHistorialState extends State<PantallaHistorial> {
 
 class _TarjetaViaje extends StatelessWidget {
   final Map<String, dynamic> viaje;
+  final VoidCallback onDelete;
 
-  const _TarjetaViaje({required this.viaje});
+  const _TarjetaViaje({required this.viaje, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +133,11 @@ class _TarjetaViaje extends StatelessWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                      onPressed: onDelete,
+                      tooltip: 'Borrar viaje',
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -73,6 +73,14 @@ class AdministradorBaseDatos{ //Para que únicamente haya una instancia de la bd
     return await db.query('bitacora', orderBy: 'fecha_viaje DESC');
   }
 
+  Future<int> eliminarBitacora(int id) async {
+    final db = await instancia.baseDatos;
+    return await db.delete(
+      'bitacora',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
   //Magnetómetro
   Future<int> insertarMagnetometro(double x, double y, double z) async {
     final db = await instancia.baseDatos;
@@ -90,6 +98,15 @@ class AdministradorBaseDatos{ //Para que únicamente haya una instancia de la bd
     return await db.query('magnetometro', orderBy: 'tiempo DESC');
   }
 
+  Future<int> eliminarMagnetometro(int id) async {
+    final db = await instancia.baseDatos;
+    return await db.delete(
+      'magnetometro',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   //Barómetro
   Future<int> insertarBarometro(double presion) async {
     final db = await instancia.baseDatos;
@@ -103,6 +120,15 @@ class AdministradorBaseDatos{ //Para que únicamente haya una instancia de la bd
   Future<List<Map<String, dynamic>>> obtenerBarometro() async {
     final db = await instancia.baseDatos;
     return await db.query('barometro', orderBy: 'tiempo DESC');
+  }
+
+  Future<int> eliminarBarometro(int id) async {
+    final db = await instancia.baseDatos;
+    return await db.delete(
+      'barometro',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
 }
